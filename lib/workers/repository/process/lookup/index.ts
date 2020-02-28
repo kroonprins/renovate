@@ -11,7 +11,7 @@ import {
 } from '../../../../datasource';
 import { LookupUpdate } from './common';
 import { RangeConfig } from '../../../../manager/common';
-import { RenovateConfig } from '../../../../config';
+import { RenovateConfig, UpdateType } from '../../../../config';
 import { clone } from '../../../../util/clone';
 import { DATASOURCE_GIT_SUBMODULES } from '../../../../constants/data-binary-source';
 
@@ -55,7 +55,7 @@ function getType(
   config: LookupUpdateConfig,
   fromVersion: string,
   toVersion: string
-): string {
+): UpdateType {
   const { versioning, rangeStrategy, currentValue } = config;
   const version = allVersioning.get(versioning);
   if (rangeStrategy === 'bump' && version.matches(toVersion, currentValue)) {
