@@ -5,11 +5,34 @@ import {
   GitPullRequest,
 } from 'azure-devops-node-api/interfaces/GitInterfaces';
 
+import { Options } from 'simple-git/promise';
 import * as azureApi from './azure-got-wrapper';
 import { logger } from '../../logger';
 import { Pr } from '../common';
+import { HostRule } from '../../util/host-rules';
 
 const mergePolicyGuid = 'fa4e907d-c16b-4a4c-9dfa-4916e5d171ab'; // Magic GUID for merge strategy policy configurations
+
+export function getStorageExtraCloneOpts(config: HostRule): Options {
+  let header: string;
+  const headerName = 'AUTHORIZATION';
+  switch (config.authenticationType) {
+    case 'basic':
+      header = `${headerName}: basic ${Buffer.from(
+        `${config.username}:${config.password}`
+      ).toString('base64')}`;
+      break;
+    case 'bearerToken':
+      header = `${headerName}: bearer ${config.token}`;
+      break;
+    case 'personalAccessToken':
+    default:
+      header = `${headerName}: basic ${Buffer.from(`:${config.token}`).toString(
+        'base64'
+      )}`;
+  }
+  return { '--config': `http.extraheader=${header}` };
+}
 
 export function getNewBranchName(branchName?: string): string {
   if (branchName && !branchName.startsWith('refs/heads/')) {

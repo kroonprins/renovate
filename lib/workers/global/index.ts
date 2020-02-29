@@ -87,7 +87,7 @@ export async function start(): Promise<0 | 1> {
     }
     setMeta({});
     printStats();
-    logger.debug(`Renovate existing successfully`);
+    logger.debug(`Renovate exiting successfully`);
   } catch (err) /* istanbul ignore next */ {
     if (err.message.startsWith('Init: ')) {
       logger.fatal(err.message.substring(6));
