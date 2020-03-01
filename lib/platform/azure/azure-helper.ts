@@ -13,23 +13,21 @@ import { HostRule } from '../../util/host-rules';
 
 const mergePolicyGuid = 'fa4e907d-c16b-4a4c-9dfa-4916e5d171ab'; // Magic GUID for merge strategy policy configurations
 
+function toBase64(from: string): string {
+  return Buffer.from(from).toString('base64');
+}
+
 export function getStorageExtraCloneOpts(config: HostRule): Options {
   let header: string;
   const headerName = 'AUTHORIZATION';
-  switch (config.authenticationType) {
-    case 'basic':
-      header = `${headerName}: basic ${Buffer.from(
-        `${config.username}:${config.password}`
-      ).toString('base64')}`;
-      break;
-    case 'bearerToken':
-      header = `${headerName}: bearer ${config.token}`;
-      break;
-    case 'personalAccessToken':
-    default:
-      header = `${headerName}: basic ${Buffer.from(`:${config.token}`).toString(
-        'base64'
-      )}`;
+  if (!config.token && config.username && config.password) {
+    header = `${headerName}: basic ${toBase64(
+      `${config.username}:${config.password}`
+    )}`;
+  } else if (config.token.length !== 52) {
+    header = `${headerName}: bearer ${config.token}`;
+  } else {
+    header = `${headerName}: basic ${toBase64(`:${config.token}`)}`;
   }
   return { '--config': `http.extraheader=${header}` };
 }

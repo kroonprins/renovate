@@ -55,33 +55,23 @@ const defaults: any = {
   hostType: PLATFORM_TYPE_AZURE,
 };
 
-export function initPlatform(
-  renovateConfig: RenovateConfig
-): Promise<PlatformConfig> {
-  if (!renovateConfig.endpoint) {
+export function initPlatform({
+  endpoint,
+  token,
+  username,
+  password,
+}: RenovateConfig): Promise<PlatformConfig> {
+  if (!endpoint) {
     throw new Error('Init: You must configure an Azure DevOps endpoint');
   }
-  if (
-    (!renovateConfig.authenticationType ||
-      renovateConfig.authenticationType === 'personalAccessToken' ||
-      renovateConfig.authenticationType === 'bearerToken') &&
-    !renovateConfig.token
-  ) {
+  if (!token && !(username && password)) {
     throw new Error(
-      `Init: You must configure an Azure DevOps token for authentication type ${renovateConfig.authenticationType}`
-    );
-  }
-  if (
-    renovateConfig.authenticationType === 'basic' &&
-    (!renovateConfig.username || !renovateConfig.password)
-  ) {
-    throw new Error(
-      `Init: You must configure an Azure DevOps username and password for authentication type basic`
+      'Init: You must configure an Azure DevOps token, or a username and password'
     );
   }
   // TODO: Add a connection check that endpoint/token combination are valid
   const res = {
-    endpoint: renovateConfig.endpoint.replace(/\/?$/, '/'), // always add a trailing slash
+    endpoint: endpoint.replace(/\/?$/, '/'), // always add a trailing slash
   };
   defaults.endpoint = res.endpoint;
   azureApi.setEndpoint(res.endpoint);

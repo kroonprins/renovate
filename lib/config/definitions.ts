@@ -469,14 +469,6 @@ const options: RenovateOptions[] = [
     default: null,
   },
   {
-    name: 'authenticationType',
-    description:
-      'Authentication type for Azure ("personalAccessToken", "bearerToken", or "basic")',
-    stage: 'repository',
-    type: 'string',
-    admin: true,
-  },
-  {
     name: 'token',
     description: 'Repository Auth Token',
     stage: 'repository',

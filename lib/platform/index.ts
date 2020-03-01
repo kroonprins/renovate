@@ -77,7 +77,7 @@ export async function initPlatform(
     hostType: returnConfig.platform,
     hostName: URL.parse(returnConfig.endpoint).hostname,
   };
-  ['authenticationType', 'token', 'username', 'password'].forEach(field => {
+  ['token', 'username', 'password'].forEach(field => {
     if (config[field]) {
       platformRule[field] = config[field];
       delete returnConfig[field];

@@ -9,7 +9,6 @@ export interface HostRule {
   hostName?: string;
   json?: true;
   baseUrl?: string;
-  authenticationType?: string;
   token?: string;
   username?: string;
   password?: string;
